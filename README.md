@@ -107,7 +107,8 @@ lib/
 ---
 
 ## 🖼️ Screenshots
-
+| Onboarding | Onboarding | Onboarding | Home | Menus | Place Details & Notification | Notifications | Google Maps | Plan | Plan | Favorites |
+|---------|----------|--------|-----------|------------------|------|------------------|------------------|-----------|-----------|
 | ![Onboarding1](screenshots/onboarding1.png) | ![Onboarding2](screenshots/onboarding2.png) | ![Onboarding3](screenshots/onboarding3.png) | ![Home](screenshots/home.png) | ![Places](screenshots/places.png) | ![Menus](screenshots/menu.png) | ![Place Details](screenshots/placeDetails_notification.png) | ![Notifications](screenshots/notifications.png) | ![Google Maps](screenshots/google_maps.png)  | ![Plan](screenshots/plan.png) | ![Favorites](screenshots/favorites.png)  | ![Profile - Dark Mode & English](screenshots/profile_dark_english.png)
 
 ---
