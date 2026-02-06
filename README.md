@@ -140,6 +140,9 @@ flutter run
 
 ---
 
+## 📲 Try the app (Android Release APK):
+ 👉https://drive.google.com/file/d/1BUZ6-fpXRAXAsSfiWAxLV8-6tA7gN8ka/view?usp=sharing
+
 🛠️ Future Enhancements
 
  - Push Notifications (FCM)
@@ -153,6 +156,8 @@ flutter run
 ## 👨‍💻 Developer
 **Moataz Mahmoud**  
 Flutter Developer
+
+- [LinkedIn](https://www.linkedin.com/in/moataz-mahmoud-a2a548a6/)  
 
 ---
 
