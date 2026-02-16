@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text('البريد الالكتروني', style: TextStyles.size14.copyWith(color: AppColors.darkColor)),
                         const Gap(12),
                         CustomeTextFormField(
-                          inputColor: isDark ? AppColors.inputColor : AppColors.wightColor,
+                          inputColor: AppColors.inputColor,
                           hintText: 'example.com@',
                           color: AppColors.inputColor,
                           fontSize: 16,
@@ -187,6 +187,13 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    navigatorKey.currentContext!.read<AuthCubit>().emailController.dispose();
+    navigatorKey.currentContext!.read<AuthCubit>().passwordController.dispose();
+    super.dispose();
   }
 }
 

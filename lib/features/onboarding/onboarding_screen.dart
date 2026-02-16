@@ -65,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   children: [
                                     AnimatedSmoothIndicator(
                                       activeIndex: index,
-                                      count: 3,
+                                      count: onboardingList.length,
                                       effect: const ExpandingDotsEffect(activeDotColor: AppColors.primaryColor, dotColor: AppColors.wightColor, dotHeight: 7),
                                     ),
                                     if (currentIndex != onboardingList.length - 1)

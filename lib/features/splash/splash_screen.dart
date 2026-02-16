@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _intializesplash() async {
-    await Future.delayed(const Duration(seconds: 3), () async {
+    await Future.delayed(const Duration(seconds: 15), () async {
       if (user != null) {
         final doc = await FirebaseFirestore.instance.collection('user').doc(FirebaseAuth.instance.currentUser!.uid).get();
         final role = doc['role'];

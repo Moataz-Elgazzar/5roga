@@ -4,7 +4,7 @@ import 'package:workmanager/workmanager.dart';
 class WorkManager {
   static Workmanager workManager = Workmanager();
   static void registerMyTask() {
-    final String id = 'DateTime.now().millisecondsSinceEpoch ~/ 4000';
+    final String id = '${DateTime.now().millisecondsSinceEpoch ~/ 4000}';
     workManager.registerPeriodicTask(id, 'show notification', frequency: const Duration(minutes: 15));
   }
 

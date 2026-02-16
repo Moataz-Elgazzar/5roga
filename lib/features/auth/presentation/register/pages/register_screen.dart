@@ -27,6 +27,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   bool get isDark => themeNotifier.value == ThemeMode.dark;
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
@@ -63,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Text('الأسم', style: TextStyles.size14.copyWith(color: AppColors.darkColor)),
                         const Gap(10),
                         CustomeTextFormField(
-                          inputColor: isDark ? AppColors.inputColor : AppColors.wightColor,
+                          inputColor: AppColors.inputColor,
                           hintText: 'الاسم',
                           color: AppColors.inputColor,
                           fontSize: 16,
@@ -84,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Text('البريد الالكتروني', style: TextStyles.size14.copyWith(color: AppColors.darkColor)),
                         const Gap(12),
                         CustomeTextFormField(
-                          inputColor: isDark ? AppColors.inputColor : AppColors.wightColor,
+                          inputColor: AppColors.inputColor,
                           hintText: 'example.com@',
                           color: AppColors.inputColor,
                           fontSize: 16,
@@ -173,4 +174,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+  @override
+  void dispose() {
+    navigatorKey.currentContext!.read<AuthCubit>().emailController.dispose();
+    navigatorKey.currentContext!.read<AuthCubit>().passwordController.dispose();
+    navigatorKey.currentContext!.read<AuthCubit>().nameController.dispose();
+    super.dispose();
+  }
+
 }

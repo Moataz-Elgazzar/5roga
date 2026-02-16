@@ -23,6 +23,7 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   bool get isDark => themeNotifier.value == ThemeMode.dark;
+  final userFuture = FirestoreServices.getUserData();
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -39,67 +40,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   children: [
                     Row(
                       children: [
-                        FutureBuilder(
-                          future: FirestoreServices.getUserData(),
-                          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                            if (!snapshot.hasData || !snapshot.data!.exists) {
-                              return CircleAvatar(radius: 40, backgroundImage: const AssetImage(AppImages.profilePng), backgroundColor: AppColors.inputColor.withValues(alpha: 0.8));
-                            } else {
-                              final userdata = snapshot.data!.data() as Map<String, dynamic>;
-                              final String? imageUrl = userdata['image'];
-                              return CircleAvatar(radius: 40, backgroundImage: imageUrl == null ? const AssetImage(AppImages.profilePng) : CachedNetworkImageProvider(imageUrl), backgroundColor: AppColors.inputColor.withValues(alpha: 0.8));
-                            }
-                          },
-                        ),
+                        profileImage(),
                         const Gap(10),
-                        Expanded(
-                          child: FutureBuilder(
-                            future: FirestoreServices.getUserData(),
-                            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                              if (!snapshot.hasData || !snapshot.data!.exists) {
-                                return const SizedBox();
-                              }
-                              final userData = snapshot.data!.data() as Map<String, dynamic>;
-                              final String? name = userData['name'];
-                              return Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Hello".tr(),
-                                      style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text: name?.split(' ').first,
-                                      style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.darkColor, fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        Expanded(child: profileName()),
                       ],
                     ),
                     const Gap(30),
-                    Row(
-                      children: [
-                        Text(
-                          'كل الاماكن',
-                          style: TextStyles.size24.copyWith(fontWeight: FontWeight.bold, color: isDark ? AppColors.wightColor : AppColors.darkColor),
-                        ),
-                        const Spacer(),
-                        TextButton(
-                          style: TextButton.styleFrom(overlayColor: Colors.transparent, padding: EdgeInsets.zero, minimumSize: const Size(50, 30), tapTargetSize: MaterialTapTargetSize.shrinkWrap, alignment: Alignment.centerRight),
-                          onPressed: () {
-                            pushTo(context, Routes.addPlace);
-                          },
-                          child: Text(
-                            'اضافة مكان',
-                            style: TextStyles.size16.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
+                    addPlace(context),
                     const Gap(20),
                     const GridPlaces(),
                   ],
@@ -108,7 +55,71 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
           ),
         );
-      }
+      },
+    );
+  }
+
+  Row addPlace(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'كل الاماكن',
+          style: TextStyles.size24.copyWith(fontWeight: FontWeight.bold, color: isDark ? AppColors.wightColor : AppColors.darkColor),
+        ),
+        const Spacer(),
+        TextButton(
+          style: TextButton.styleFrom(overlayColor: Colors.transparent, padding: EdgeInsets.zero, minimumSize: const Size(50, 30), tapTargetSize: MaterialTapTargetSize.shrinkWrap, alignment: Alignment.centerRight),
+          onPressed: () {
+            pushTo(context, Routes.addPlace);
+          },
+          child: Text(
+            'اضافة مكان',
+            style: TextStyles.size16.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
+  }
+
+  FutureBuilder<DocumentSnapshot<Object?>> profileImage() {
+    return FutureBuilder(
+      future: userFuture,
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return CircleAvatar(radius: 40, backgroundImage: const AssetImage(AppImages.profilePng), backgroundColor: AppColors.inputColor.withValues(alpha: 0.8));
+        } else {
+          final userdata = snapshot.data!.data() as Map<String, dynamic>;
+          final String? imageUrl = userdata['image'];
+          return CircleAvatar(radius: 40, backgroundImage: imageUrl == null ? const AssetImage(AppImages.profilePng) : CachedNetworkImageProvider(imageUrl), backgroundColor: AppColors.inputColor.withValues(alpha: 0.8));
+        }
+      },
+    );
+  }
+
+  FutureBuilder<DocumentSnapshot<Object?>> profileName() {
+    return FutureBuilder(
+      future: userFuture,
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const SizedBox();
+        }
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+        final String? name = userData['name'];
+        return Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: "Hello".tr(),
+                style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: name?.split(' ').first,
+                style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.darkColor, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

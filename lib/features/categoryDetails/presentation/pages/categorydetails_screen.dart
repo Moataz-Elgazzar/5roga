@@ -1,5 +1,4 @@
 import 'package:app_5roga/components/inputs/custome_text_form_field%20copy.dart';
-import 'package:app_5roga/core/location/location_handler.dart';
 import 'package:app_5roga/core/routes/navigator.dart';
 import 'package:app_5roga/core/routes/routes.dart';
 import 'package:app_5roga/core/utils/colors.dart';
@@ -24,7 +23,6 @@ class CategoryDetailsScreen extends StatefulWidget {
 }
 
 class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
-  String? fullAddress;
   final TextEditingController searchController = TextEditingController();
   final MapController mapcontroller = MapController(initPosition: GeoPoint(latitude: 30.0818165, longitude: 31.3630254));
   bool get isDark => themeNotifier.value == ThemeMode.dark;
@@ -48,19 +46,6 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
             backgroundColor: widget.model.type == CategryType.map ? Colors.transparent : Colors.transparent,
           ),
           body: widget.model.type == CategryType.map ? LocationMap(controller: mapcontroller) : _buildOtherContent(),
-          floatingActionButton: widget.model.type == CategryType.map
-              ? FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: AppColors.primaryColor,
-                  onPressed: () async {
-                    final value = await determinePosition();
-                    setState(() {
-                      fullAddress = value;
-                    });
-                  },
-                  child: const Icon(Icons.location_on, color: AppColors.wightColor),
-                )
-              : null,
         );
       },
     );

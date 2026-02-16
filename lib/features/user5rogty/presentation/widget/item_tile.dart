@@ -23,31 +23,7 @@ class _ItemTileState extends State<ItemTile> {
       direction: DismissDirection.endToStart,
       key: UniqueKey(),
       onDismissed: (direction) {
-        showDialog(
-          context: context,
-          builder: (dialogContext) {
-            return AlertDialog.adaptive(
-              title: Text("deletefroga".tr(), style: TextStyles.size20.copyWith(color: AppColors.darkColor)),
-              content: Text("sure".tr(), style: TextStyles.size18.copyWith(color: AppColors.darkColor)),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    await removekhoroga();
-                    Navigator.pop(dialogContext);
-                  },
-                  child: Text('Delete', style: TextStyles.size16.copyWith(color: AppColors.darkColor)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                    setState(() {});
-                  },
-                  child: Text('Cancel', style: TextStyles.size16.copyWith(color: AppColors.darkColor)),
-                ),
-              ],
-            );
-          },
-        );
+        dismissedDialog(context);
       },
       background: Container(
         padding: const EdgeInsets.all(20),
@@ -62,33 +38,65 @@ class _ItemTileState extends State<ItemTile> {
       ),
       child: Container(
         decoration: BoxDecoration(color: AppColors.primaryColor.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(20)),
-        child: ListTile(
-          title: Text(
-            context.isArabic ? widget.kmodel.arName ?? "" : widget.kmodel.enName ?? "",
-            style: TextStyles.size20.copyWith(color: AppColors.wightColor),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: CachedNetworkImage(imageUrl: widget.kmodel.image ?? "", width: 80, fit: BoxFit.fill),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.kmodel.date ?? "", style: TextStyles.size16.copyWith(color: AppColors.wightColor)),
-              Text(widget.kmodel.time ?? "", style: TextStyles.size16.copyWith(color: AppColors.wightColor)),
-            ],
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text((widget.kmodel.rating).toString(), style: TextStyles.size18.copyWith(color: AppColors.wightColor)),
-              const Icon(Icons.star, color: Colors.amber),
-            ],
-          ),
-        ),
+        child: listTile(context),
       ),
+    );
+  }
+
+  ListTile listTile(BuildContext context) {
+    return ListTile(
+      title: Text(
+        context.isArabic ? widget.kmodel.arName ?? "" : widget.kmodel.enName ?? "",
+        style: TextStyles.size20.copyWith(color: AppColors.wightColor),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: CachedNetworkImage(imageUrl: widget.kmodel.image ?? "", width: 80, fit: BoxFit.fill),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.kmodel.date ?? "", style: TextStyles.size16.copyWith(color: AppColors.wightColor)),
+          Text(widget.kmodel.time ?? "", style: TextStyles.size16.copyWith(color: AppColors.wightColor)),
+        ],
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text((widget.kmodel.rating).toString(), style: TextStyles.size18.copyWith(color: AppColors.wightColor)),
+          const Icon(Icons.star, color: Colors.amber),
+        ],
+      ),
+    );
+  }
+
+  Future<dynamic> dismissedDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog.adaptive(
+          title: Text("deletefroga".tr(), style: TextStyles.size20.copyWith(color: AppColors.darkColor)),
+          content: Text("sure".tr(), style: TextStyles.size18.copyWith(color: AppColors.darkColor)),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await removekhoroga();
+                Navigator.pop(dialogContext);
+              },
+              child: Text('Delete', style: TextStyles.size16.copyWith(color: AppColors.darkColor)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                setState(() {});
+              },
+              child: Text('Cancel', style: TextStyles.size16.copyWith(color: AppColors.darkColor)),
+            ),
+          ],
+        );
+      },
     );
   }
 

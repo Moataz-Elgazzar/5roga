@@ -1,3 +1,4 @@
+import 'package:app_5roga/core/location/location_handler.dart';
 import 'package:app_5roga/core/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -12,6 +13,7 @@ class LocationMap extends StatefulWidget {
 
 class _LocationMapState extends State<LocationMap> {
   List<GeoPoint> markers = [];
+  String? fullAddress;
 
   @override
   void initState() {
@@ -71,6 +73,26 @@ class _LocationMapState extends State<LocationMap> {
               await widget.controller.zoomOut();
             },
             child: const Icon(Icons.remove, color: AppColors.wightColor),
+          ),
+        ),
+        Positioned(
+          bottom: 50,
+          left: 20,
+          child: FloatingActionButton(
+            heroTag: null,
+            backgroundColor: AppColors.primaryColor,
+            onPressed: () async {
+              final position = await determinePosition();
+              setState(() {
+                fullAddress = position;
+              });
+              final parts = position.split(',');
+              final lat = double.parse(parts[0]);
+              final lng = double.parse(parts[1]);
+              final point = GeoPoint(latitude: lat, longitude: lng);
+              await widget.controller.moveTo(point, animate: true);
+            },
+            child: const Icon(Icons.location_on, color: AppColors.wightColor),
           ),
         ),
       ],

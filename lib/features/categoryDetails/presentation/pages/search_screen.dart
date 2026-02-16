@@ -44,7 +44,7 @@ class SearchScreen extends StatelessWidget {
                   final places = snapshot.data!.docs;
                   return GridView.builder(
                     physics: const BouncingScrollPhysics(),
-                    itemCount: snapshot.data?.docs.length,
+                    itemCount: places.length,
                     shrinkWrap: true,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10, mainAxisExtent: 320),
                     itemBuilder: (BuildContext context, int index) {

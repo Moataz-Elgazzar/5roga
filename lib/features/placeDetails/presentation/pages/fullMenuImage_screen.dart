@@ -14,7 +14,7 @@ class FullMenuImageScreen extends StatelessWidget {
         },
         child: Hero(
           tag: imageUrl,
-          child: CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.contain, width: double.infinity, height: double.infinity),
+          child: CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.fill, width: double.infinity, height: double.infinity),
         ),
       ),
     );

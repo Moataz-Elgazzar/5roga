@@ -61,7 +61,10 @@ class MenuScreen extends StatelessWidget {
                           decoration: BoxDecoration(color: AppColors.wightColor, borderRadius: BorderRadius.circular(20)),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            child: CachedNetworkImage(imageUrl: model.menuImage![index], fit: BoxFit.cover),
+                            child: Hero(
+                              tag: model.menuImage![index],
+                              child: CachedNetworkImage(imageUrl: model.menuImage![index], fit: BoxFit.cover),
+                            ),
                           ),
                         ),
                       );

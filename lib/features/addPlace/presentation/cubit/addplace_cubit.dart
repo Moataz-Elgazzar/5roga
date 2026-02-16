@@ -16,6 +16,8 @@ class AddplaceCubit extends Cubit<AddPlaceState> {
   String? englishSubCategory;
   String? arabicMode;
   String? englishMode;
+  int? ratingCount;
+  List<double>? ratings;
   bool isChosenForYou = false;
   double? rate = 0;
   final arabicNameController = TextEditingController();
@@ -55,7 +57,7 @@ class AddplaceCubit extends Cubit<AddPlaceState> {
         }
       }
 
-      final place = PlaceModel(id: openingHourController.text + closingHourController.text + englishNameController.text, arName: arabicNameController.text, enName: englishNameController.text, arDescription: arabicDescribtionController.text, enDescription: englishDescribtionController.text, mainImage: mainImageUrl, location: locationController.text, address: addressController.text, arabicPlaceCategories: arabicPlaceCategory, englishPlaceCategories: englishPlaceCategory, arabicSubCategories: arabicSubCategory, englishSubCategories: englishSubCategory, arMode: arabicMode, enMode: englishMode, isChosen: isChosenForYou, openHour: openingHourController.text, closeHour: closingHourController.text, phoneNumber: phoneController.text, menuImage: updatedMenuImages, rating: rate);
+      final place = PlaceModel(id: openingHourController.text + closingHourController.text + englishNameController.text, arName: arabicNameController.text, enName: englishNameController.text, arDescription: arabicDescribtionController.text, enDescription: englishDescribtionController.text, mainImage: mainImageUrl, location: locationController.text, address: addressController.text, arabicPlaceCategories: arabicPlaceCategory, englishPlaceCategories: englishPlaceCategory, arabicSubCategories: arabicSubCategory, englishSubCategories: englishSubCategory, arMode: arabicMode, enMode: englishMode, isChosen: isChosenForYou, openHour: openingHourController.text, closeHour: closingHourController.text, phoneNumber: phoneController.text, menuImage: updatedMenuImages, rating: rate , ratings: ratings , ratingCount: 0);
       FirebaseFirestore.instance.collection('places').doc().set(place.toJson());
 
       emit(AddPlaceSuccess());
@@ -90,7 +92,7 @@ class AddplaceCubit extends Cubit<AddPlaceState> {
         }
       }
 
-      final place = PlaceModel(id: openingHourController.text + closingHourController.text + englishNameController.text, arName: arabicNameController.text, enName: englishNameController.text, arDescription: arabicDescribtionController.text, enDescription: englishDescribtionController.text, mainImage: mainImageUrl, location: locationController.text, address: addressController.text, arabicPlaceCategories: arabicPlaceCategory, englishPlaceCategories: englishPlaceCategory, arabicSubCategories: arabicSubCategory, englishSubCategories: englishSubCategory, arMode: arabicMode, enMode: englishMode, isChosen: isChosenForYou, openHour: openingHourController.text, closeHour: closingHourController.text, phoneNumber: phoneController.text, menuImage: updatedMenuImages);
+      final place = PlaceModel(id: openingHourController.text + closingHourController.text + englishNameController.text, arName: arabicNameController.text, enName: englishNameController.text, arDescription: arabicDescribtionController.text, enDescription: englishDescribtionController.text, mainImage: mainImageUrl, location: locationController.text, address: addressController.text, arabicPlaceCategories: arabicPlaceCategory, englishPlaceCategories: englishPlaceCategory, arabicSubCategories: arabicSubCategory, englishSubCategories: englishSubCategory, arMode: arabicMode, enMode: englishMode, isChosen: isChosenForYou, openHour: openingHourController.text, closeHour: closingHourController.text, phoneNumber: phoneController.text, menuImage: updatedMenuImages , );
       FirebaseFirestore.instance.collection('places').doc(place.id).update(place.update());
       emit(AddPlaceSuccess());
     } on Exception catch (_) {

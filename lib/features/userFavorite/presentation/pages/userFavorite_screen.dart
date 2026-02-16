@@ -36,63 +36,63 @@ class _UserFavoriteScreenState extends State<UserFavoriteScreen> {
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               clipBehavior: Clip.none,
-              child: Column(
-                children: [
-                  StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("favoriteList").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(child: AppLoadingScreen());
-                      }
-                      final List<String> favoritesList = List<String>.from(snapshot.data!.data()?['favoriteList'] ?? []);
-                      if (favoritesList.isEmpty) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.1),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Center(child: Lottie.asset(AppImages.empty, width: 300, height: 300)),
-                              Text("noplace".tr()),
-                            ],
-                          ),
-                        );
-                      }
-                      return FutureBuilder<List<PlaceModel>>(
-                        future: Future.wait(
-                          favoritesList.map((id) async {
-                            final data = await FirebaseFirestore.instance.collection("places").where("id", isEqualTo: id).get();
-                            if (data.docs.isNotEmpty) {
-                              return PlaceModel.fromJson(data.docs.first.data());
-                            } else {
-                              return null;
-                            }
-                          }),
-                        ).then((list) => list.whereType<PlaceModel>().toList()),
-                        builder: (context, snapshot2) {
-                          if (!snapshot2.hasData) {
-                            return const Center(child: AppLoadingScreen());
-                          }
-                          final List<PlaceModel> favoritePlaces = snapshot2.data!;
-                          return ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return ItemsTile(model: favoritePlaces[index]);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(height: 10);
-                            },
-                            itemCount: favoritePlaces.length,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
+              child: Column(children: [listOfPlaces()]),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> listOfPlaces() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("favoriteList").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: AppLoadingScreen());
+        }
+        final List<String> favoritesList = List<String>.from(snapshot.data!.data()?['favoriteList'] ?? []);
+        if (favoritesList.isEmpty) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.1),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: Lottie.asset(AppImages.empty, width: 300, height: 300)),
+                Text("noplace".tr()),
+              ],
+            ),
+          );
+        }
+        return FutureBuilder<List<PlaceModel>>(
+          future: Future.wait(
+            favoritesList.map((id) async {
+              final data = await FirebaseFirestore.instance.collection("places").where("id", isEqualTo: id).get();
+              if (data.docs.isNotEmpty) {
+                return PlaceModel.fromJson(data.docs.first.data());
+              } else {
+                return null;
+              }
+            }),
+          ).then((list) => list.whereType<PlaceModel>().toList()),
+          builder: (context, snapshot2) {
+            if (!snapshot2.hasData) {
+              return const Center(child: AppLoadingScreen());
+            }
+            final List<PlaceModel> favoritePlaces = snapshot2.data!;
+            return ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return ItemsTile(model: favoritePlaces[index]);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 10);
+              },
+              itemCount: favoritePlaces.length,
+            );
+          },
         );
       },
     );

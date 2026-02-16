@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CustomePassword extends StatefulWidget {
   const CustomePassword({super.key, this.validator, this.controller, this.keyboardType});
-  
+
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -30,7 +30,7 @@ class _CustomePasswordState extends State<CustomePassword> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyle(color: isDark ? AppColors.inputColor : AppColors.wightColor),
+      style: const TextStyle(color: AppColors.inputColor),
       keyboardType: widget.keyboardType,
       obscureText: obscureText,
       validator: validate,

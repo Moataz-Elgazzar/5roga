@@ -90,86 +90,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => Container(
-                                      decoration: BoxDecoration(color: AppColors.primaryColor.withValues(alpha: 0.1)),
-                                      height: 200,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: Column(
-                                          children: [
-                                            MainButtonCustom(
-                                              title: "camera".tr(),
-                                              onPressed: () {
-                                                uploadImages(isCamera: true);
-                                              },
-                                              textColor: AppColors.wightColor,
-                                              backgroundColor: AppColors.primaryColor.withValues(alpha: 0.5),
-                                            ),
-                                            const Gap(10),
-                                            MainButtonCustom(
-                                              title: "gallery".tr(),
-                                              onPressed: () {
-                                                uploadImages(isCamera: false);
-                                              },
-                                              textColor: AppColors.wightColor,
-                                              backgroundColor: AppColors.primaryColor.withValues(alpha: 0.5),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: CircleAvatar(
-                                  radius: 40,
-                                  backgroundImage: imagePath != null
-                                      ? FileImage(imagePath!) as ImageProvider
-                                      : (imageUrl != null)
-                                      ? CachedNetworkImageProvider(imageUrl)
-                                      : const AssetImage(AppImages.profilePng),
-                                  backgroundColor: AppColors.inputColor.withValues(alpha: 0.8),
-                                ),
-                              ),
-                              Positioned(
-                                top: 60,
-                                right: 10,
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.backGroundColor),
-                                  child: const Icon(Icons.photo_camera, color: AppColors.primaryColor),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(10),
-                          Expanded(
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Hello".tr(),
-                                    style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text: name?.split(' ').first,
-                                    style: TextStyles.size18.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      profileImage(context, imageUrl, name),
                       const Gap(20),
                       CustomeTextFormField(readOnly: true, hintText: name, color: AppColors.inputColor),
 
@@ -177,36 +98,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       CustomeTextFormField(readOnly: true, hintText: email, color: AppColors.inputColor),
 
                       const Gap(20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("dark_mode".tr(), style: context.isArabic ? TextStyles.size20 : TextStyles.size18),
-                          IconButton(
-                            style: IconButton.styleFrom(overlayColor: Colors.transparent),
-                            onPressed: () {
-                              final isDark = themeNotifier.value == ThemeMode.dark;
-                              themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
-                              SharedPref.isdark(!isDark);
-                            },
-                            icon: Icon(mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode, size: 30, color: AppColors.primaryColor),
-                          ),
-                        ],
-                      ),
+                      darkMode(context, mode),
 
                       const Gap(20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("language".tr(), style: context.isArabic ? TextStyles.size20 : TextStyles.size18),
-                          IconButton(
-                            style: IconButton.styleFrom(overlayColor: Colors.transparent),
-                            onPressed: () {
-                              context.setLocale(Locale(context.isArabic ? 'en' : 'ar'));
-                            },
-                            icon: const Icon(Icons.language, size: 30, color: AppColors.primaryColor),
-                          ),
-                        ],
-                      ),
+                      language(context),
                     ],
                   ),
                 );
@@ -214,20 +109,145 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ),
 
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.only(bottom: 40, left: 20, right: 20, top: 10),
-            child: MainButtonCustom(
-              title: "logout".tr(),
-              onPressed: () {
-                context.read<AuthCubit>().signoutUser();
-                goToBase(context, Routes.login);
-              },
-              textColor: AppColors.wightColor,
-              backgroundColor: AppColors.primaryColor,
-            ),
-          ),
+          bottomNavigationBar: logOut(context),
         );
       },
+    );
+  }
+
+  Row profileImage(BuildContext context, String? imageUrl, String? name) {
+    return Row(
+      children: [
+        Stack(
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                uploadImageFromcameraOrGallery(context);
+              },
+              child: CircleAvatar(
+                radius: 40,
+                backgroundImage: imagePath != null
+                    ? FileImage(imagePath!) as ImageProvider
+                    : (imageUrl != null)
+                    ? CachedNetworkImageProvider(imageUrl)
+                    : const AssetImage(AppImages.profilePng),
+                backgroundColor: AppColors.inputColor.withValues(alpha: 0.8),
+              ),
+            ),
+            Positioned(
+              top: 60,
+              right: 10,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.backGroundColor),
+                child: const Icon(Icons.photo_camera, color: AppColors.primaryColor),
+              ),
+            ),
+          ],
+        ),
+        const Gap(10),
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: "Hello".tr(),
+                  style: TextStyles.size18.copyWith(color: isDark ? AppColors.wightColor : AppColors.primaryColor, fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text: name?.split(' ').first,
+                  style: TextStyles.size18.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<dynamic> uploadImageFromcameraOrGallery(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        decoration: BoxDecoration(color: AppColors.primaryColor.withValues(alpha: 0.1)),
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              MainButtonCustom(
+                title: "camera".tr(),
+                onPressed: () {
+                  uploadImages(isCamera: true);
+                },
+                textColor: AppColors.wightColor,
+                backgroundColor: AppColors.primaryColor.withValues(alpha: 0.5),
+              ),
+              const Gap(10),
+              MainButtonCustom(
+                title: "gallery".tr(),
+                onPressed: () {
+                  uploadImages(isCamera: false);
+                },
+                textColor: AppColors.wightColor,
+                backgroundColor: AppColors.primaryColor.withValues(alpha: 0.5),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row darkMode(BuildContext context, ThemeMode mode) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("dark_mode".tr(), style: context.isArabic ? TextStyles.size20 : TextStyles.size18),
+        IconButton(
+          style: IconButton.styleFrom(overlayColor: Colors.transparent),
+          onPressed: () {
+            final isDark = themeNotifier.value == ThemeMode.dark;
+            themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
+            SharedPref.isdark(!isDark);
+          },
+          icon: Icon(mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode, size: 30, color: AppColors.primaryColor),
+        ),
+      ],
+    );
+  }
+
+  Row language(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("language".tr(), style: context.isArabic ? TextStyles.size20 : TextStyles.size18),
+        IconButton(
+          style: IconButton.styleFrom(overlayColor: Colors.transparent),
+          onPressed: () {
+            context.setLocale(Locale(context.isArabic ? 'en' : 'ar'));
+          },
+          icon: const Icon(Icons.language, size: 30, color: AppColors.primaryColor),
+        ),
+      ],
+    );
+  }
+
+  Padding logOut(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40, left: 20, right: 20, top: 10),
+      child: MainButtonCustom(
+        title: "logout".tr(),
+        onPressed: () {
+          context.read<AuthCubit>().signoutUser();
+          goToBase(context, Routes.login);
+        },
+        textColor: AppColors.wightColor,
+        backgroundColor: AppColors.primaryColor,
+      ),
     );
   }
 

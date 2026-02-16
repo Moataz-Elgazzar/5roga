@@ -8,7 +8,6 @@ import 'package:app_5roga/features/userHome/data/models/mode.dart';
 import 'package:app_5roga/main.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:gap/gap.dart';
 
 class ModeDetailsScreen extends StatefulWidget {
@@ -21,8 +20,6 @@ class ModeDetailsScreen extends StatefulWidget {
 class _ModeDetailsScreenState extends State<ModeDetailsScreen> {
   final TextEditingController searchController = TextEditingController();
   bool get isDark => themeNotifier.value == ThemeMode.dark;
-  String? fullAddress;
-  final MapController mapcontroller = MapController(initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324), areaLimit: const BoundingBox(east: 10.4922941, north: 47.8084648, south: 45.817995, west: 5.9559113));
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,32 +42,31 @@ class _ModeDetailsScreenState extends State<ModeDetailsScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          if (widget.model.title != "location".tr()) ...[
-            CustomeTextFormField(
-              inputColor: AppColors.inputColor,
-              color: AppColors.inputColor,
-              textInputAction: TextInputAction.search,
-              onFieldSubmitted: (String value) {
-                if (searchController.text.isNotEmpty) {
-                  pushTo(context, Routes.search, extra: searchController.text);
-                }
-              },
-              controller: searchController,
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: AppColors.primaryColor),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              hintText: widget.model.title.tr() == "location".tr() ? 'ابحث عن مكان' : '${"searchFor".tr()} ${widget.model.title.tr()}',
-              suffixIcon: IconButton(
-                onPressed: () {
-                  if (searchController.text.isNotEmpty) pushTo(context, Routes.search, extra: searchController.text);
-                },
-                icon: const Icon(Icons.search, color: AppColors.primaryColor),
-              ),
+          CustomeTextFormField(
+            inputColor: AppColors.inputColor,
+            color: AppColors.inputColor,
+            textInputAction: TextInputAction.search,
+            onFieldSubmitted: (String value) {
+              if (searchController.text.isNotEmpty) {
+                pushTo(context, Routes.search, extra: searchController.text);
+              }
+            },
+            controller: searchController,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColors.primaryColor),
+              borderRadius: BorderRadius.circular(30),
             ),
+            hintText: '${"searchFor".tr()} ${widget.model.title.tr()}',
+            suffixIcon: IconButton(
+              onPressed: () {
+                if (searchController.text.isNotEmpty) pushTo(context, Routes.search, extra: searchController.text);
+              },
+              icon: const Icon(Icons.search, color: AppColors.primaryColor),
+            ),
+          ),
 
-            const Gap(20),
-          ],
+          const Gap(20),
+
           Expanded(child: _buildBody()),
         ],
       ),

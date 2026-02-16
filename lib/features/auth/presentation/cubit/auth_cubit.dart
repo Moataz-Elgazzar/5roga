@@ -110,7 +110,7 @@ class AuthCubit extends Cubit<AuthState> {
         await FirebaseFirestore.instance.collection('user').doc(user.uid).set(userdata.toJson());
       } else {
         final userdata = UserModel(email: user.email, name: user.displayName, uid: user.uid, role: 'user', image: user.photoURL ?? googleUser.photoUrl);
-        await FirebaseFirestore.instance.collection('user').doc(user.uid).set(userdata.toUpdate());
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).update(userdata.toUpdate());
       }
     } on Exception catch (e) {
       log('Error saving to Firestore: $e');

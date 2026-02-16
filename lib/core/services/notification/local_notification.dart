@@ -19,7 +19,7 @@ class LocalNotificationService {
 
   static Future<void> weeklySchduledNotification() async {
     final String channelId = '${DateTime.now().millisecondsSinceEpoch ~/ 2000000}';
-    final AndroidNotificationDetails android = AndroidNotificationDetails(channelId, 'schduled notification', importance: Importance.max, priority: Priority.high, sound: RawResourceAndroidNotificationSound('sound.wav'.split('.').first));
+    final AndroidNotificationDetails android = AndroidNotificationDetails(channelId, 'schduled notification', importance: Importance.max, priority: Priority.high, sound: RawResourceAndroidNotificationSound('sound.wav'.split('.').first), playSound: true);
     final NotificationDetails notificationDetails = NotificationDetails(android: android);
     tz.initializeTimeZones();
     final TimezoneInfo timezoneInfo = await FlutterTimezone.getLocalTimezone();
@@ -34,14 +34,14 @@ class LocalNotificationService {
     log("currentTime.hour:${currentTime.hour}");
     log("currentTime.minute:${currentTime.minute}");
     log("currentTime.second:${currentTime.second}");
-    var scheduleTime = tz.TZDateTime(tz.local, currentTime.year, currentTime.month, currentTime.day, 7, 0);
+    var scheduleTime = tz.TZDateTime(tz.local, currentTime.year, currentTime.month, currentTime.day, 12, 0);
     log("scheduledTime.year:${scheduleTime.year}");
     log("scheduledTime.month:${scheduleTime.month}");
     log("scheduledTime.day:${scheduleTime.day}");
     log("scheduledTime.hour:${scheduleTime.hour}");
     log("scheduledTime.minute:${scheduleTime.minute}");
     log("scheduledTime.second:${scheduleTime.second}");
-    int daysUntilTarget = (DateTime.wednesday - currentTime.weekday) % 7;
+    int daysUntilTarget = (DateTime.saturday - currentTime.weekday) % 7;
     if (daysUntilTarget == 0 && scheduleTime.isBefore(currentTime)) {
       // لو نفس اليوم لكن الوقت فات، زوّد أسبوع
       daysUntilTarget = 7;

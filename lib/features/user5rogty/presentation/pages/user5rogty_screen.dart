@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:app_5roga/core/constants/app_images.dart';
 import 'package:app_5roga/core/functions/extension.dart';
 import 'package:app_5roga/core/functions/loading.dart';
@@ -51,94 +52,45 @@ class _User5rogtyScreenState extends State<User5rogtyScreen> {
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   clipBehavior: Clip.none,
-                  child: Column(
-                    children: [
-                      datePicker(),
-                      const Gap(30),
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection("khoroga").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const AppLoadingScreen();
-                          }
-                          final List allKhoroga = snapshot.data?.data()?["list"] ?? [];
-
-                          final List filtered = allKhoroga.where((item) => item["date"] == date).toList();
-                          if (filtered.isEmpty) {
-                            return Column(mainAxisAlignment: MainAxisAlignment.center, children: [Lottie.asset(AppImages.empty, width: 300, height: 300), Text("noplace2".tr())]);
-                          } else {
-                            return ListView.separated(
-                              itemCount: filtered.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              clipBehavior: Clip.none,
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                final kModel = KhorogaModel.fromJson(filtered[index]);
-                                return ItemTile(kmodel: kModel);
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(height: 10);
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                  child: Column(children: [datePicker(), const Gap(30), listOfPlaces(date)]),
                 ),
               ),
             ),
           ),
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Directionality(
-              textDirection: ui.TextDirection.ltr,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.primaryColor : AppColors.wightColor,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), spreadRadius: 2, blurRadius: 5, offset: const Offset(0, 3))],
-                    ),
-                    child: IconButton(
-                      style: IconButton.styleFrom(overlayColor: Colors.transparent),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () async {
-                        try {
-                          final imageBytes = await screenshotController.capture();
-
-                          if (imageBytes != null) {
-                            // 2. الحصول على مسار المجلد المؤقت للجهاز
-                            final directory = await getTemporaryDirectory();
-                            final imagePath = await File('${directory.path}/screenshot.png').create();
-
-                            // 3. كتابة البيانات في ملف
-                            await imagePath.writeAsBytes(imageBytes);
-
-                            // 4. مشاركة الملف باستخدام share_plus
-
-                            if (await imagePath.exists()) {
-                              await SharePlus.instance.share(ShareParams(files: [XFile(imagePath.path)], text: 'يلا نخرج'));
-                            }
-                          }
-                        } catch (e, s) {
-                          log("Screenshot error: $e");
-                          log("StackTrace: $s");
-                        }
-                      },
-                      icon: Icon(Icons.share_outlined, color: isDark ? AppColors.wightColor : AppColors.primaryColor, size: 30),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          bottomNavigationBar: Share(isDark: isDark, screenshotController: screenshotController),
         );
+      },
+    );
+  }
+
+  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> listOfPlaces(String date) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("khoroga").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const AppLoadingScreen();
+        }
+        final List allKhoroga = snapshot.data?.data()?["list"] ?? [];
+
+        final List filtered = allKhoroga.where((item) => item["date"] == date).toList();
+        if (filtered.isEmpty) {
+          return Column(mainAxisAlignment: MainAxisAlignment.center, children: [Lottie.asset(AppImages.empty, width: 300, height: 300), Text("noplace2".tr())]);
+        } else {
+          return ListView.separated(
+            itemCount: filtered.length,
+            physics: const NeverScrollableScrollPhysics(),
+            clipBehavior: Clip.none,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final kModel = KhorogaModel.fromJson(filtered[index]);
+              return ItemTile(kmodel: kModel);
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(height: 10);
+            },
+          );
+        }
       },
     );
   }
@@ -190,6 +142,65 @@ class _User5rogtyScreenState extends State<User5rogtyScreen> {
           selectedDate = date;
         });
       },
+    );
+  }
+}
+
+class Share extends StatelessWidget {
+  const Share({super.key, required this.isDark, required this.screenshotController});
+
+  final bool isDark;
+  final ScreenshotController screenshotController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Directionality(
+        textDirection: ui.TextDirection.ltr,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.primaryColor : AppColors.wightColor,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), spreadRadius: 2, blurRadius: 5, offset: const Offset(0, 3))],
+              ),
+              child: IconButton(
+                style: IconButton.styleFrom(overlayColor: Colors.transparent),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () async {
+                  try {
+                    final imageBytes = await screenshotController.capture();
+
+                    if (imageBytes != null) {
+                      // 2. الحصول على مسار المجلد المؤقت للجهاز
+                      final directory = await getTemporaryDirectory();
+                      final imagePath = await File('${directory.path}/screenshot.png').create();
+
+                      // 3. كتابة البيانات في ملف
+                      await imagePath.writeAsBytes(imageBytes);
+
+                      // 4. مشاركة الملف باستخدام share_plus
+
+                      if (await imagePath.exists()) {
+                        await SharePlus.instance.share(ShareParams(files: [XFile(imagePath.path)], text: 'يلا نخرج'));
+                      }
+                    }
+                  } catch (e, s) {
+                    log("Screenshot error: $e");
+                    log("StackTrace: $s");
+                  }
+                },
+                icon: Icon(Icons.share_outlined, color: isDark ? AppColors.wightColor : AppColors.primaryColor, size: 30),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

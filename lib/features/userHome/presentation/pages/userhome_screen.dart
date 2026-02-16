@@ -31,7 +31,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   List<CategoryModel> categories = model;
   List<ModeModel> modes = model2;
   bool get isDark => themeNotifier.value == ThemeMode.dark;
-
+  final userFuture = FirestoreServices.getUserData();
   int activeIndex = 0;
   List<Widget> images = [Image.asset(AppImages.skyPng, width: double.infinity, fit: BoxFit.cover), Image.asset(AppImages.filmPng, width: double.infinity, fit: BoxFit.cover), Image.asset(AppImages.trainDeathPng, width: double.infinity, fit: BoxFit.cover), Image.asset(AppImages.chickenPng, width: double.infinity, fit: BoxFit.cover)];
 
@@ -57,7 +57,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 Row(
                   children: [
                     FutureBuilder(
-                      future: FirestoreServices.getUserData(),
+                      future: userFuture,
                       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                         if (!snapshot.hasData || !snapshot.data!.exists) {
                           return CircleAvatar(radius: 40, backgroundImage: const AssetImage(AppImages.profilePng), backgroundColor: AppColors.inputColor.withValues(alpha: 0.8));
@@ -71,7 +71,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     const Gap(10),
                     Expanded(
                       child: FutureBuilder(
-                        future: FirestoreServices.getUserData(),
+                        future: userFuture,
                         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                           if (!snapshot.hasData || !snapshot.data!.exists) {
                             return const SizedBox();

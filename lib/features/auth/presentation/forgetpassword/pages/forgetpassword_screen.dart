@@ -14,8 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-class ForgetpasswordScreen extends StatelessWidget {
+class ForgetpasswordScreen extends StatefulWidget {
   const ForgetpasswordScreen({super.key});
+
+  @override
+  State<ForgetpasswordScreen> createState() => _ForgetpasswordScreenState();
+}
+
+class _ForgetpasswordScreenState extends State<ForgetpasswordScreen> {
   bool get isDark => themeNotifier.value == ThemeMode.dark;
 
   @override
@@ -60,7 +66,7 @@ class ForgetpasswordScreen extends StatelessWidget {
                   const Text('البريد الالكتروني', style: TextStyles.size14),
                   const Gap(12),
                   CustomeTextFormField(
-                    inputColor: isDark ? AppColors.inputColor : AppColors.wightColor,
+                    inputColor: AppColors.inputColor,
                     hintText: 'example.com@',
                     color: AppColors.inputColor,
                     fontSize: 16,
@@ -109,5 +115,11 @@ class ForgetpasswordScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    navigatorKey.currentContext!.read<AuthCubit>().emailController.dispose();
+    super.dispose();
   }
 }
